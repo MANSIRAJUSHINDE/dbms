@@ -1,0 +1,56 @@
+USE sys;
+
+CREATE TABLE o_rollcall (roll_no INT, name VARCHAR(20), address VARCHAR(20));
+CREATE TABLE n_rollcall (roll_no INT, name VARCHAR(20), address VARCHAR(20));
+
+INSERT INTO o_rollcall VALUES (1, 'Hitesh', 'Nandura');
+INSERT INTO o_rollcall VALUES (2, 'Piyush', 'MP');
+INSERT INTO o_rollcall VALUES (3, 'Ashley', 'Nsk');
+INSERT INTO o_rollcall VALUES (4, 'Kalpesh', 'Dhule');
+INSERT INTO o_rollcall VALUES (5, 'Abhi', 'Satara');
+
+DELIMITER //
+
+CREATE PROCEDURE p3(IN r1 INT)
+BEGIN
+    DECLARE r2 INT;
+
+    DECLARE c1 CURSOR FOR
+        SELECT roll_no
+        FROM o_rollcall
+        WHERE roll_no > r1;
+
+    DECLARE CONTINUE HANDLER FOR NOT FOUND
+        SET r2 = NULL;
+
+    OPEN c1;
+
+    e_loop: LOOP
+        FETCH c1 INTO r2;
+
+        IF r2 IS NULL THEN
+            LEAVE e_loop;
+        END IF;
+
+        IF NOT EXISTS (SELECT 1 FROM n_rollcall WHERE roll_no = r2) THEN
+            INSERT INTO n_rollcall (roll_no, name, address)
+            SELECT roll_no, name, address
+            FROM o_rollcall
+            WHERE roll_no = r2;
+        END IF;
+    END LOOP e_loop;
+
+    CLOSE c1;
+END //
+
+DELIMITER ;
+
+CALL p3(3);
+CALL p3(0);
+
+INSERT INTO o_rollcall VALUES (6, 'Patil', 'Kolhapur');
+
+CALL p3(4);
+
+SELECT * FROM o_rollcall;
+SELECT * FROM n_rollcall;
