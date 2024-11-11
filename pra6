@@ -46,7 +46,11 @@ END //
 DELIMITER ;
 
 CALL p3(3);
+select *from o_rollcall;
+select *from n_rollcall;
 CALL p3(0);
+select *from o_rollcall;
+select *from n_rollcall;
 
 INSERT INTO o_rollcall VALUES (6, 'Patil', 'Kolhapur');
 
