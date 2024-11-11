@@ -18,3 +18,14 @@ db.books.aggregate({$group:{_id:"$name","total":{$push:"$price"}}});
 db.books.aggregate({$group:{_id:"$name","total":{"$sum":1}}});
 db.books.aggregate({$group:{_id:"$name","total":{"$addToSet":1}}});
 db.books.aggregate({$group:{_id:"$name","total":{"$addToSet":"$price"}}});
+
+db.books.createIndex({"name":1});
+
+db.books.getIndexes();
+
+db.books.createIndex({"name":1});
+
+db.books.dropIndex({"name":1});
+
+db.books.getIndexes();
+
